@@ -2,7 +2,7 @@ import UIKit
 
 class RedViewController: UIViewController {
     // UI Elements
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Erişilebilirlik"
         label.textAlignment = .center
@@ -12,27 +12,30 @@ class RedViewController: UIViewController {
         return label
     }()
     
-    private let checkboxContainer: UIView = {
+    private lazy var checkboxContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private let checkboxLabel: UILabel = {
+    private lazy var checkboxLabel: UILabel = {
         let label = UILabel()
-        label.text = "checkbox deneme"
+        label.text = "Okudum, onaylıyorum."
         label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onCheckBoxLabelTap)))
+        label.accessibilityTraits = [ .staticText ]
         return label
     }()
     
-    private let checkboxButton: UIButton = {
+    private lazy var checkboxButton: UIButton = {
         let button = UIButton(type: .system)
         button.tintColor = .systemBlue
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isAccessibilityElement = true
-        button.accessibilityLabel = "Checkbox"
+        button.accessibilityLabel = "Checkbox değeri \(false)"
         button.accessibilityIdentifier = "checkboxButton"
         return button;
     }()
@@ -55,6 +58,7 @@ class RedViewController: UIViewController {
     
     @objc private func checkboxTapped() {
         isChecked.toggle()
+        checkboxButton.accessibilityLabel = "Check değeri \(isChecked)"
         updateCheckboxImage()
     }
     
@@ -68,7 +72,12 @@ class RedViewController: UIViewController {
     }()
     
     @objc private func hesaplarLabelTapped() {
-        print("Hesaplar label tapped")
+        let accountsViewController = AccountsViewController()
+        present(accountsViewController, animated: true)
+    }
+    
+    @objc private func onCheckBoxLabelTap() {
+        checkboxTapped()
     }
     
     private let hesaplarImageView: UIImageView = {
@@ -131,7 +140,7 @@ class RedViewController: UIViewController {
         print("Tap index: \(index), RedText range: \(nsRange)")
         if nsRange.location != NSNotFound {
             if index >= nsRange.location && index < nsRange.location + nsRange.length {
-                attributedContainer.layer.borderColor = UIColor.red.cgColor
+                showAccesbilityTest()
             }
         }
     }
@@ -230,6 +239,11 @@ class RedViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    private func showAccesbilityTest() {
+        let accesbilityTest = AccesbilityTestViewController()
+        present(accesbilityTest, animated: true)
     }
 }
 
